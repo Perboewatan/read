@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PoorFinder</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f8f9fa;
+      color: #333;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px;
+      background: #222;
+      color: #fff;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 32px;
+    }
+
+    header p {
+      margin: 5px 0 0;
+      font-size: 16px;
+      color: #bbb;
+    }
+
+    .search-box {
+      text-align: center;
+      margin: 20px;
+    }
+
+    .search-box input {
+      width: 60%;
+      padding: 10px;
+      font-size: 16px;
+    }
+
+    .books-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .book-card {
+      background: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .book-card:hover {
+      transform: scale(1.05);
+    }
+
+    .book-card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+    }
+
+    .book-info {
+      padding: 10px;
+    }
+
+    .book-info h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .book-info p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* Detail modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: rgba(0,0,0,0.6);
+    }
+
+    .modal-content {
+      background: #fff;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 600px;
+    }
+
+    .close {
+      float: right;
+      font-size: 24px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1> <span style="color: orange;">Poor</span> <spanstyle="color: white;">Finder</span> </h1>
+    <p>Temukan dan jelajahi buku favorit Anda</p>
+  </header>
+
+  <div class="search-box">
+    <input type="text" id="search" placeholder="Search by title, author, or genre...">
+  </div>
+
+  <div class="books-grid" id="bookList"></div>
+
+  <!-- Modal untuk detail -->
+  <div id="bookModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2 id="modalTitle"></h2>
+      <p id="modalAuthor"></p>
+      <p id="modalDescription"></p>
+    </div>
+  </div>
+
+  <script>
+    const books = [
+      {
+        id: 1,
+        title: "Bumi Manusia",
+        author: "Pramoedya Ananta Toer",
+        description: "Bumi Manusia adalah novel pertama dari tetralogi Buru yang mengisahkan perjuangan seorang pribumi bernama Minke, pemuda cerdas yang mendapat pendidikan Belanda pada masa kolonial. Ia jatuh cinta pada Annelies, putri",
+        cover: "https://covers.openlibrary.org/b/id/15122195-L.jpg"
+      },
+      {
+        id: 2,
+        title: "Silent Cry",
+        author: "Kenzaburo Ōe",
+        description: "The Silent Cry is a haunting novel that explores family conflict, memory, and the weight of history.",
+        cover: "https://covers.openlibrary.org/b/id/10067847-L.jpg"
+      },
+      {
+        id: 3,
+        title: "1984",
+        author: "George Orwell",
+        description: "1984 is a dystopian novel that portrays a totalitarian society under constant surveillance, where truth is manipulated and individuality is suppressed.",
+        cover: "https://covers.openlibrary.org/b/id/7222246-L.jpg"
+      },
+      {
+        id: 4,
+        title: "Who Rules the World",
+        author: "Noam Chomsky",
+        description: "Who Rules the World? explores the role of the United States in global politics, exposing military interventions, economic interests, and power structures that often contradict democratic values.",
+        cover: "https://covers.openlibrary.org/b/olid/OL27626815M-L.jpg"
+      }
+    ];
+
+    const bookList = document.getElementById("bookList");
+    const search = document.getElementById("search");
+
+    function displayBooks(list) {
+      bookList.innerHTML = "";
+      list.forEach(book => {
+        const card = document.createElement("div");
+        card.className = "book-card";
+        card.innerHTML = `
+          <img src="${book.cover}" alt="${book.title}">
+          <div class="book-info">
+            <h3>${book.title}</h3>
+            <p>by ${book.author}</p>
+          </div>
+        `;
+        card.onclick = () => openModal(book);
+        bookList.appendChild(card);
+      });
+    }
+
+    search.addEventListener("input", () => {
+      const query = search.value.toLowerCase();
+      const filtered = books.filter(b =>
+        b.title.toLowerCase().includes(query) ||
+        b.author.toLowerCase().includes(query)
+      );
+      displayBooks(filtered);
+    });
+
+    function openModal(book) {
+      document.getElementById("modalTitle").innerText = book.title;
+      document.getElementById("modalAuthor").innerText = "by " + book.author;
+      document.getElementById("modalDescription").innerText = book.description;
+      document.getElementById("bookModal").style.display = "block";
+    }
+
+    function closeModal() {
+      document.getElementById("bookModal").style.display = "none";
+    }
+
+    // tampilkan semua buku awal
+    displayBooks(books);
+  </script>
+</body>
+</html>
